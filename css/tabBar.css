@@ -1,15 +1,24 @@
 #navbar {
+  --default-transition: 0.25s cubic-bezier(0.075, 0.82, 0.165, 1);
+
   display: flex;
-  height: calc(36px + var(--control-space-top));
+  height: var(--nav-height);
   transition: 0.2s background-color;
   width: 100%;
+  max-width: 100%;
   -webkit-user-select: none;
   position: relative;
   outline: none;
-  z-index: 2;
+  align-items: center;
   padding-top: var(--control-space-top);
-  padding-left: var(--control-space-left);
-  padding-right: var(--control-space-right);
+  padding-inline: var(--control-space-right);
+  margin-inline: auto;
+  transition: var(--default-transition);
+}
+
+.is-edit-mode #navbar #tabs-inner {
+  max-width: 800px;
+  padding-inline: 0;
 }
 
 /* when the tab-group is white, we need a line to separate it from the webviews */
@@ -36,10 +45,11 @@
 /* navbar buttons */
 
 #toolbar-navigation-buttons {
-  width: 2rem;
+  opacity: 0;
   transition: 0.1s width;
   white-space: nowrap;
   overflow: hidden;
+  transition: var(--default-transition);
 }
 
 #toolbar-navigation-buttons.can-go-forward:hover {
@@ -48,6 +58,10 @@
 
 body.is-edit-mode #toolbar-navigation-buttons {
   display: none;
+}
+
+body.is-edit-mode #add-tab-button {
+  width: 0;
 }
 
 #back-button,
@@ -67,13 +81,24 @@ body.is-edit-mode #toolbar-navigation-buttons {
   margin-left: -0.25rem;
 }
 
-#menu-button {
-  width: 36px;
-  padding: 0;
+#navbar:is(:hover, :has(input:focus)) #menu-button,
+body:has(#navbar:is(:hover, :has(input:focus))) #switch-task-button {
+  opacity: 1;
+}
+
+#navbar:is(:hover, :has(input:focus)) #toolbar-navigation-buttons {
+  opacity: 1;
+}
+
+#navbar:is(:hover, :has(input:focus)) #add-tab-button {
+  opacity: 1;
 }
 
 #menu-button {
-  display: none;
+  width: 36px;
+  padding: 0;
+  opacity: 0.5;
+  transition: var(--default-transition);
 }
 
 body.windows #menu-button,
@@ -83,6 +108,63 @@ body.linux #menu-button {
 
 /* tab layout */
 
+body:is(.windows, .linux):not(.maximized):not(.fullscreen):not(
+    .separate-titlebar
+  )
+  #tabs-inner {
+  -webkit-app-region: no-drag;
+  max-width: 1000px;
+  width: 100%;
+  margin-inline: auto;
+}
+
+body:is(.windows, .linux):not(.maximized):not(.fullscreen):not(
+    .separate-titlebar
+  )
+  #switch-task-button {
+  top: 13px;
+  width: 36px;
+  border-radius: 4px;
+  -webkit-app-region: no-drag;
+}
+
+body:is(.windows, .linux):not(.maximized):not(.fullscreen):not(
+    .separate-titlebar
+  )
+  .windows-caption-buttons {
+  top: 14px;
+  right: 14px;
+  -webkit-app-region: no-drag;
+}
+
+body:is(.windows, .linux):not(.maximized):not(.fullscreen):not(
+    .separate-titlebar
+  )
+  .windows-caption-buttons
+  > .element {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+body:is(.windows, .linux):not(.maximized):not(.fullscreen):not(
+    .separate-titlebar
+  )
+  #menu-button {
+  position: fixed;
+  left: 14px;
+  top: 14px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+body:is(.windows, .linux):not(.maximized):not(.fullscreen):not(
+    .separate-titlebar
+  )
+  #add-tab-button {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
 #navbar #tabs {
   display: flex;
   flex: 1;
@@ -91,6 +173,7 @@ body.linux #menu-button {
 }
 #tabs #tabs-inner {
   display: flex;
+  gap: 5px;
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
@@ -114,6 +197,9 @@ body.linux #menu-button {
   gap: 0.5rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  transition: var(--default-transition);
 }
 .tab-item.gu-mirror {
   top: var(--control-space-top) !important;
@@ -133,7 +219,7 @@ body.linux #menu-button {
   width: 100%;
   height: 100%;
   z-index: -1;
-  content: '';
+  content: "";
   background-color: var(--theme-background-color);
   opacity: 0.7;
 }
@@ -148,11 +234,8 @@ body.linux #menu-button {
   display: none;
 }
 
-#navbar.show-dividers .tab-item:not(:last-child) {
-  border-right: 1px solid rgba(0, 0, 0, 0.15);
-}
-.dark-theme #navbar.show-dividers .tab-item:not(:last-child) {
-  border-right-color: rgba(255, 255, 255, 0.4);
+.dark-theme .tab-item {
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 #navbar.show-dividers:before {
@@ -160,7 +243,7 @@ body.linux #menu-button {
 }
 
 .tab-item:not(.active):hover {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0.06);
 }
 .dark-theme .tab-item:not(.active):hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -176,11 +259,6 @@ body.linux #menu-button {
   align-items: center;
   gap: 0.5rem;
   order: 1;
-}
-body:not(.touch)
-  .tab-item:not(:hover)
-  .tab-icon-area:has(.tab-close-button:only-child) {
-  margin-left: -0.5rem;
 }
 
 .tab-item .tab-icon {
@@ -208,7 +286,8 @@ body:not(.touch)
   background: rgba(255, 255, 255, 0.15);
 }
 .tab-item.active:not(:only-child) {
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.1);
+  flex-basis: 40%;
 }
 .dark-theme .tab-item.active:not(:only-child) {
   background: rgba(255, 255, 255, 0.2);
@@ -239,6 +318,8 @@ body:not(.touch)
   display: none;
 }
 .tab-item .title {
+  width: 100%;
+  text-align: center;
   font-size: 15px;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -252,6 +333,7 @@ body:not(.touch)
   height: 36px;
   margin-top: -0.5px;
   font-size: 1.4em !important;
+  -webkit-app-region: no-drag;
 }
 body.windows .navbar-action-button:not(:disabled):hover {
   background-color: rgba(0, 0, 0, 0.075);
@@ -270,9 +352,12 @@ body.windows.dark-theme .navbar-action-button:not(:disabled):hover {
 }
 
 .navbar-right-actions #add-tab-button {
-  padding: 0;
   width: 36px;
+  padding: 0;
+  opacity: 0;
+  overflow: hidden;
   font-size: 1.6em !important;
+  transition: var(--default-transition);
 }
 
 /* audio button */
@@ -337,24 +422,24 @@ body.windows.dark-theme .navbar-action-button:not(:disabled):hover {
 
 /* in Carbon, close icon is a bit smaller than other icons, enlarge it in order to match with other icons */
 .tab-item .tab-close-button {
+  position: absolute;
   font-size: 1.25em;
   box-sizing: border-box;
-  order: 1;
-}
-.tab-item .tab-close-button:hover:after {
-  font-size: 0.9em;
+  width: 36px;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--default-transition);
 }
 
-/* when the tab is hovered, hide info buttons and show the close button */
-
-body:not(.touch) .tab-item:hover .tab-info-icon {
-  display: none;
-}
-body:not(.touch) .tab-item .tab-close-button {
-  display: none;
-}
 body:not(.touch) .tab-item:hover .tab-close-button {
-  display: inline-block;
+  opacity: 1;
+  pointer-events: all;
+}
+
+.tab-close-button:hover {
+  opacity: 1;
+  pointer-events: all;
 }
 
 body.is-focus-mode .navbar-action-button:not(#menu-button) {

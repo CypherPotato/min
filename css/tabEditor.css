@@ -2,12 +2,14 @@
   padding: 0 0.55em;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
   width: 100%;
+  max-width: 800px;
   display: flex;
   height: 100%;
   align-items: center;
   transform-origin: top left;
+  translate: -50% 0;
   z-index: 1;
 }
 

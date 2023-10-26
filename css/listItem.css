@@ -4,6 +4,7 @@
   position: relative;
   padding: 8px 9px 9px 9px;
   cursor: pointer;
+  border-radius: 6px;
   transition: 0.2s transform, 0.2s opacity;
 }
 .searchbar-item.placeholder {

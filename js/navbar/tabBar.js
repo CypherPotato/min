@@ -80,7 +80,7 @@ const tabBar = {
 
     // title
 
-    var title = document.createElement('span')
+    var title = document.createElement('div')
     title.className = 'title'
 
     tabEl.appendChild(title)

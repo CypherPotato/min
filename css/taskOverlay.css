@@ -51,6 +51,8 @@
   right: var(--control-space-right);
   z-index: 4;
   padding: 0.5em;
+  opacity: 0.5;
+  transition: var(--default-transition);
 }
 
 #switch-task-button.active {
